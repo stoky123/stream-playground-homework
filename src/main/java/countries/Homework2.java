@@ -1,5 +1,7 @@
 package countries;
 
+import java.util.function.Function;
+
 import java.io.IOException;
 
 import java.math.BigDecimal;
@@ -93,32 +95,28 @@ public class Homework2 {
      * Returns a map that contains for each character the number of occurrences in country names ignoring case.
      */
     public Map<Character, Long> streamPipeline9() {
-        // TODO
-        return null;
+        return countries.stream().map(Country::getName).flatMap(name -> name.toLowerCase().chars().mapToObj(c -> (char)c)).collect(groupingBy(Function.identity(), counting()));
     }
 
     /**
      * Returns a map that contains the number of countries for each possible timezone.
      */
     public Map<ZoneId, Long> streamPipeline10() {
-        // TODO
-        return null;
+        return countries.stream().map(Country::getTimezones).flatMap(c -> c.stream()).collect(groupingBy(Function.identity(), counting()));
     }
 
     /**
      * Returns the number of country names by region that starts with their two-letter country code ignoring case.
      */
     public Map<Region, Long> streamPipeline11() {
-        // TODO
-        return null;
+        return countries.stream().filter(c -> c.getName().toLowerCase().startsWith(c.getCode().toLowerCase())).collect(groupingBy(c -> c.getRegion(), counting()));
     }
 
     /**
      * Returns a map that contains the number of countries whose population is greater or equal than the population average versus the the number of number of countries with population below the average.
      */
     public Map<Boolean, Long> streamPipeline12() {
-        // TODO
-        return null;
+        return countries.stream().collect(groupingBy(c -> c.getPopulation() >= countries.stream().mapToLong(Country::getPopulation).average().getAsDouble(), counting()));
     }
 
     /**
@@ -133,8 +131,8 @@ public class Homework2 {
      * Returns the list of capitals by region whose name is the same is the same as the name of their country.
      */
     public Map<Region, List<String>> streamPipeline14() {
-        // TODO
-        return null;
+        return countries.stream()
+                .collect(groupingBy(c -> c.getRegion(), filtering(c -> c.getCapital().equals(c.getName()), mapping(Country::getCapital, toList()))));
     }
 
     /**
